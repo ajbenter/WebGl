@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="http://www.visineat.com/js/visineat-webgl-2.6.js"></script>
+	<script type="text/javascript">
+
+	function onload()
+	{
+		var c=new WebGLCanvas("div_container");
+		
+		//In this example we will construct a WebGLObject, which will contain the data of the triangle.
+		var o=new WebGLObject(c);
+		var square=new WebGLObject(c);
+		var angle=0;
+		
+		c.onSetup=function()
+		{
+			//We set the XYZ coordinates of the three vertices of the object:
+			o.setXYZ([-0.5,0.5,0.5, 0.5,0.5,0.5, -0.5,-0.5,0.5, 0.5,-0.5,0.5, -0.5,0.5,-0.5, 0.5,0.5,-0.5, -0.5,-0.5,-0.5, 0.5,-0.5,-0.5]);
+			//We create one triangle with the previously set vertex 0, vertex 1, and vertex 2:
+			o.setTriangles([0,2,1, 1,2,3, 1,3,5, 5,3,7, 0,4,2, 2,4,6, 4,5,6, 6,5,7, 0,1,4 , 4,1,5, 2,3,6, 6,3,7]);
+			
+			
+			square.setXYZ([0.5, 0.5,0,    -0.5,0.5,0,    -0.5,-0.5,0,   0.5,-0.5,0]);
+			square.setTriangles([0,1,1,   0,2,3]);
+			square.setColors([1,0,0,  1,1,0,  0,1,0,   0.5,0.5,0.5]);
+            o.setColors([1,1,0, 1,1,0, 1,1,0, 1,1,0, 0,0,1, 0,0,1, 0,0,1, 0,0,1]);
+			square.setTexture("http://www.visineat.com/js/img/preset5_icon.png");
+			square.setUV([1,1,   0,1,   0,0,   1,0]);
+			
+			c.setBackgroundColor(1,0,1);
+			c.setLoadingStatus(false);
+		};
+		c.onDraw=function()
+		{
+			var gl=c.getGL();
+			gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);	
+			
+			var cam=c.getCamera();
+			
+			cam.pushMatrix();
+				cam.rotate(angle,[0, 1, 0]);
+				angle+=0.01;
+				
+				//We draw the object by first updating its shader and then actually rendering it on the canvas.
+				o.updateShader();
+				o.draw();
+			cam.popMatrix();
+			
+			square.updateShader();
+			square.draw();
+			
+		};
+		c.start();
+		
+		
+		
+	}
+	</script>
+</head>
+<body onload="onload();" style="margin:0px;">
+<div id="div_container" style="display:block;position:absolute;width:100%;top:0px;bottom:0px;"></div>
+</body></html>
